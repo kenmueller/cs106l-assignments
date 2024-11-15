@@ -1,4 +1,6 @@
 **/*.DS_Store
+# Solution files
+*.soln
 
 # Prerequisites
 *.d
