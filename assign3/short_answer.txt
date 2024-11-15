@@ -1,11 +1,12 @@
-Before submitting this file, make sure that there are no more TODO
-placeholders remaining in the file (and remove this comment too).
-
 Make a Class
 ------------
 
 Q1. What’s const-correctness and why is it important?
-A1. TODO
+A1.
+
+Const-correctness is when you use the `const` keyword to ensure that a variable, parameter, or method cannot not be modified. The code is safer and more predictable by preventing unintended side effects. Using `const` also allows the compiler to optimize code better.
 
 Q2. Is your class const-correct? How do you know?
-A2. TODO
+A2.
+
+Yes, `assignment` is const-correct. The getter functions (`get_name` and `get_points`) are marked as `const` since they do not modify the asignment's state. The setter functions (`set_name` and `set_points`) are not marked as `const` since they modify the assignment's state. `get_name_and_points` and `print_name_and_points` are marked as `const` as well. Since all methods that do not alter the assignment are marked with `const`, `assignment` is const-correct.

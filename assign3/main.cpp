@@ -1,17 +1,14 @@
-/*
- * CS106L Assignment 3: Make a Class
- * Created by Fabio Ibanez with modifications by Jacob Roberts-Baca.
- */
+#include "class.h"
 
-/* #### Please don't change this line! #### */
 int run_autograder();
 
 int main() {
-  // STUDENT TODO: Construct an instance of your class!
+  assignment assignment_1("Assignment 1", 10);
 
-  /* #### Please don't change this line! #### */
+  assignment_1.set_points(20);
+  assignment_1.print_name_and_points();
+
   return run_autograder();
 }
 
-/* #### Please don't change this line! #### */
 #include "utils.hpp"

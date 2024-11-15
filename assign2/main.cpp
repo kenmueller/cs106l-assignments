@@ -1,22 +1,13 @@
-/*
- * CS106L Assignment 2: Marriage Pact
- * Created by Haven Whitney with modifications by Fabio Ibanez & Jacob Roberts-Baca.
- *
- * Welcome to Assignment 2 of CS106L! Please complete each STUDENT TODO
- * in this file. You do not need to modify any other files.
- *
- */
-
+#include "utils.h"
+#include <ctime>
 #include <fstream>
 #include <iostream>
 #include <queue>
-#include <set>
+#include <stdexcept>
 #include <string>
 #include <unordered_set>
 
-#include "utils.h"
-
-std::string kYourName = "STUDENT TODO"; // Don't forget to change this!
+std::string kYourName = "Ken Mueller";
 
 /**
  * Takes in a file name and returns a set containing all of the applicant names as a set.
@@ -26,23 +17,55 @@ std::string kYourName = "STUDENT TODO"; // Don't forget to change this!
  * @returns         A set of all applicant names read from the file.
  *
  * @remark Feel free to change the return type of this function (and the function
- * below it) to use a `std::unordered_set` instead. If you do so, make sure
- * to also change the corresponding functions in `utils.h`.
+ * below it) to use a `std::unordered_set` instead.
  */
-std::set<std::string> get_applicants(std::string filename) {
-  // STUDENT TODO: Implement this function.
+std::unordered_set<std::string> get_applicants(const std::string& filename) {
+  std::unordered_set<std::string> applicants;
+  std::ifstream file(filename);
+
+  if (!file.is_open())
+    throw std::runtime_error("Unable to open " + filename);
+
+  std::string line;
+
+  while (std::getline(file, line)) {
+    if (line.empty())
+      continue;
+
+    applicants.insert(line);
+  }
+
+  return applicants;
+}
+
+std::string get_initials(const std::string& name) {
+  const auto space_position = name.find(' ');
+
+  if (space_position == std::string::npos)
+    throw std::runtime_error("Invalid name " + name);
+
+  return std::to_string(std::toupper(name[0])) +
+         std::to_string(std::toupper(name[space_position + 1]));
 }
 
 /**
  * Takes in a set of student names by reference and returns a queue of names
  * that match the given student name.
  *
- * @param name      The returned queue of names should have the same initials as this name.
- * @param students  The set of student names.
- * @return          A queue containing pointers to each matching name.
+ * @param name       The returned queue of names should have the same initials as this name.
+ * @param students   The set of student names.
+ * @returns          A queue containing pointers to each matching name.
  */
-std::queue<const std::string*> find_matches(std::string name, std::set<std::string>& students) {
-  // STUDENT TODO: Implement this function.
+std::queue<const std::string*> find_matches(const std::string& name,
+                                            const std::unordered_set<std::string>& students) {
+  const auto initials = get_initials(name);
+  std::queue<const std::string*> matches;
+
+  for (const auto& student : students)
+    if (get_initials(student) == initials)
+      matches.push(&student);
+
+  return matches;
 }
 
 /**
@@ -56,8 +79,17 @@ std::queue<const std::string*> find_matches(std::string name, std::set<std::stri
  *                Will return "NO MATCHES FOUND." if `matches` is empty.
  */
 std::string get_match(std::queue<const std::string*>& matches) {
-  // STUDENT TODO: Implement this function.
+  if (matches.empty())
+    return "NO STUDENT FOUND.";
+
+  std::srand(std::time(nullptr));
+
+  const auto match_index = std::rand() % matches.size();
+
+  for (int i = 0; i < match_index; i++)
+    matches.pop();
+
+  return *matches.front();
 }
 
-/* #### Please don't modify this call to the autograder! #### */
 int main() { return run_autograder(); }

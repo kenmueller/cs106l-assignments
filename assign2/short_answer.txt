@@ -1,11 +1,40 @@
-Before submitting this file, make sure that there are no more TODO
-placeholders remaining in the file (and remove this comment too).
-
 Marriage Pact
 -------------
 
 Q1. It is your choice to use either an ordered or unordered set. In a few sentences, what are some of the tradeoffs between the two? Additionally, please give an example (that has not been shown in lecture) of a valid hash function that could be used to hash student names for an unordered set.
-A1. TODO
+A1.
+
+An ordered set is implemented as a balanced binary tree. It maintains the elements in sorted order and the time complexity for insertions, deletions, and lookups is O(log(n)). It tends to be slower compared to an unordered set for large datasets because of the additional overhead of maintaining the tree structure.
+
+An unordered set is implemented as a hash table. The elements do not maintain a specific order. Although, insertions, deletions, and lookups is O(1) in the best case scenario. The downside is that unordered sets use more memory and can be O(n) in the worst case due to hash collisions.
+
+Note: I did not attend class due to an injury, so I do not know if this hash function was covered during class.
+I chose the DJB2 hash function. Start with a large prime number (5381) and for each character in the string, multiply the hash by 33 and add the ASCII value of the character. This can be represented as `hash = hash * 33 + c`, or more efficiently, `hash = (hash << 5) + hash + c`. This is because shifting hash to the left by 5 bits multiplies it by 2^5 = 32, then adding hash again essentially multiplies it by 33. This is a common string hashing function since it's simple and effective.
+
+```
+struct NameHash {
+  std::size_t operator()(const std::string& name) const {
+    std::size_t hash = 5381;
+
+    for (const char c : name)
+      hash = (hash << 5) + hash + c; // hash * 33 + c
+
+    return hash;
+  }
+};
+```
+
+You can use `NameHash` like this:
+
+```
+std::unordered_set<std::string, NameHash> applicants;
+```
 
 Q2. Note that we are saving pointers to names in the queue, not names themselves. Why might this be desired in this problem? What happens if the original set where the names are stored goes out of scope and the pointers are referenced?
-A2. TODO
+A2.
+
+There's a few benefits to having a queue of pointers to the names instead of the actual names, but also a few downsides.
+
+Pointers allow us to avoid duplicating the full names, which can save memory, especially when dealing with large datasets. The names are already stored in the set, so we can just reference those names instead of copying them. Copying strings can be costly in time and memory because strings are dynamic data structures, which has additional overhead due to the variable size. So, using pointers is more efficient is this case.
+
+However, these pointers only remain valid as long as the original set of names remains in scope. If the original set goes out of scope or is destroyed, the memory for the names it contains will be deallocated. The pointers in the queue will become dangling pointers, referencing memory that has been freed. Dereferencing dangling pointers will result in undefined behavior. I disagree with using pointers this way due to the potential for dangling pointers. The pointer should imply the existence of the referenced memory, which in this case, it cannot. If you couple the set and the queue together, then this is okay, but leaving them separate is a recipe for disaster. 

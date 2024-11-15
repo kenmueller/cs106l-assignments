@@ -1,13 +1,3 @@
-/*
- * CS106L Assignment 3: Make a Class
- * Created by Fabio Ibanez with modifications by Jacob Roberts-Baca.
- */
-
-/* ========================================================================= *
- * Don't worry about anything beyond this point.                             *
- * (unless you are really curious and want to!)                              *
- * ========================================================================= */
-
 #include <fstream>
 #include <iostream>
 #include <sstream>
