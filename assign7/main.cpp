@@ -1,8 +1,3 @@
-/*
- * CS106L Assignment 7: Unique Pointer
- * Created by Jacob Roberts-Baca.
- */
-
 #include <functional>
 #include <iostream>
 #include <sstream>
@@ -19,7 +14,6 @@
  * @note No modifications are necessary to this struct in order to complete the assignment!
  */
 template <typename T> struct ListNode {
-
   /** @brief The value stored inside this node. */
   T value;
 
@@ -51,8 +45,16 @@ template <typename T> struct ListNode {
  * @return A `unique_ptr` to the head of the list.
  */
 template <typename T> unique_ptr<ListNode<T>> create_list(const std::vector<T>& values) {
-  /* STUDENT TODO: Implement this method */
-  throw std::runtime_error("Not implemented: createList");
+  unique_ptr<ListNode<T>> head;
+
+  for (int i = values.size() - 1; i >= 0; --i) {
+    auto node = make_unique<ListNode<T>>(values[i]);
+
+    node->next = std::move(head);
+    head = std::move(node);
+  }
+
+  return head;
 }
 
 /**
@@ -64,8 +66,10 @@ template <typename T> unique_ptr<ListNode<T>> create_list(const std::vector<T>& 
  */
 template <typename T, typename Func>
 void map_list(const unique_ptr<ListNode<T>>& head, const Func& func) {
-  if (!head)
+  if (!head) {
     return;
+  }
+
   func(head->value);
   map_list(head->next, func);
 }

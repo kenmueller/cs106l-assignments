@@ -1,17 +1,22 @@
-Before submitting this file, make sure that there are no more TODO
-placeholders remaining in the file (and remove this comment too).
-
 Unique Pointer
 --------------
 
 Q1. List one or two benefits of using RAII to manage memory instead manually calling `new` and `delete`.
-A1. TODO
+A1.
+
+RAII makes sure that memory is released when the associated objects go out of scope. You can forget to do this manually, it clutters code, and it is also exception-safe since memory is released up even if an exception is thrown before `delete`.
 
 Q2. When implementing move semantics for a `unique_ptr`, for example in the move constructor `unique_ptr(unique_ptr&& other)`, it is essential that we set the underlying pointer of the `other` parameter to `nullptr` before exiting the function. Explain in your own words what problem would arise if we did not.
-A2. TODO
+A2.
+
+If we do not set `other.ptr` to `nullptr`, both the moved-from `unique_ptr` (`other`) and the new `unique_ptr` (`this`) would point to the same memory. When they both go out of scope, they would both attempt to delete the same memory, which is undefined behavior.
 
 Q3. This method of recursive deallocation through RAII works great for small lists, but may pose a problem for longer lists. Why? Hint: what is the limit for how "deep" a recursive function's call stack can grow?
-A3. TODO
+A3.
+
+Recursive deallocation adds a new frame to the call stack for each node in the list. For very long lists, this can exceed the maximum call stack size, causing a stack overflow.
 
 Q4. What does `std::move` do in this context? Why is it safe to use `std::move` and move semantics here?
-A4. TODO
+A4.
+
+`std::move` casts `head` to an xvalue, allowing us to transfer ownership of its resources to `node->next` using move semantics. It's safe because in the move constructor, `head` is reset to represent `nullptr`, so there are no duplicate references in the `unique_ptr`s.
